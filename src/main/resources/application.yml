@@ -1,0 +1,19 @@
+spring:
+  h2:
+    console:
+      enabled: true
+# 브라우저에서 http://localhost:8080/h2-console/   접속 가능 DB 정보는 Run 창에 로그로 출력됨.  show databases;
+# o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:09b8cb08-869f-44c4-bd6a-6166bf0e2637'
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true
+#  datasource:
+#    initialization-mode: always
+#    driverClassName: org.h2.Driver
+#    data: classpath:h2/data.sq
+server:
+  port: 8080
