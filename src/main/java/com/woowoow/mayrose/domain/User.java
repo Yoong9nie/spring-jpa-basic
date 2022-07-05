@@ -2,10 +2,9 @@ package com.woowoow.mayrose.domain;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 //@Getter
@@ -17,6 +16,7 @@ import java.time.LocalDateTime;
 //@EqualsAndHashCode          // JPA에서 많이 쓸 일은 없지만, 권고하고 있음.  Delombok 해서 생성되는 코드를  확인해 보자.
 @Builder
 @Entity
+// @Table( name = "User", indexes = {@Index(columnList="name")}, uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 public class User {
     @Id
     @GeneratedValue
@@ -26,11 +26,30 @@ public class User {
     private String name;
 
     @NonNull
+    //@Column(unique = true, length = 255)
     private String email;
 
+    // 0, 1, 2 Enum의 순서에 따라서 값이 달라지지 않도록 반드시 String 형으로 해야 한다.
+    @Enumerated( value = EnumType.STRING)
+    private Gender gender;
+
+    //@Column(name = "crtdat")
+    //@Column(nullable = false)
+    //@Column(updatable = false)          //  update 구문에 set 구문에 들어가지 않음.
     private LocalDateTime createdAt;
+
+    //@Column(name = "uptdat")
+    //@Column(nullable = false)
+    //@Column(insertable = false )        //  insert시에  values 구문에 들어가지 않음.
     private LocalDateTime updatedAt;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<Address> address;
+
+    // DB 영속성 처리에서 제외한다.  칼럼도 생성하지 않고, SQL문에 나타나지 않게 하기.
+    // 다만 객체에서만 사용한다.
+    @Transient
+    private String testData;
     // Getter and Setter 만들기
     // 1. 직접 코딩하기.
     // 2. IntelliJ에서 Generate 하기
