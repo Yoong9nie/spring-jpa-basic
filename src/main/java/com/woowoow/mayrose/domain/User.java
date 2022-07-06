@@ -1,6 +1,11 @@
 package com.woowoow.mayrose.domain;
 
+import com.woowoow.mayrose.domain.listener.Auditable;
+import com.woowoow.mayrose.domain.listener.UserEntityListener;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,8 +21,10 @@ import java.util.List;
 //@EqualsAndHashCode          // JPA에서 많이 쓸 일은 없지만, 권고하고 있음.  Delombok 해서 생성되는 코드를  확인해 보자.
 @Builder
 @Entity
+//@EntityListeners( value = { MyEntityListener.class, UserEntityListener.class })
+@EntityListeners( value = { AuditingEntityListener.class, UserEntityListener.class })
 // @Table( name = "User", indexes = {@Index(columnList="name")}, uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
-public class User {
+public class User implements Auditable {
     @Id
     @GeneratedValue
     private Long id;
@@ -36,11 +43,13 @@ public class User {
     //@Column(name = "crtdat")
     //@Column(nullable = false)
     //@Column(updatable = false)          //  update 구문에 set 구문에 들어가지 않음.
+    @CreatedDate                           // JpaAuditing 대상으로 함.
     private LocalDateTime createdAt;
 
     //@Column(name = "uptdat")
     //@Column(nullable = false)
     //@Column(insertable = false )        //  insert시에  values 구문에 들어가지 않음.
+    @LastModifiedDate                     // JpaAuditing 대상으로 함.
     private LocalDateTime updatedAt;
 
     @OneToMany(fetch = FetchType.EAGER)
@@ -68,4 +77,46 @@ public class User {
     //    빌드 패턴 지원함.
 
     // 8. Entity  ( DB로 저장할 수 있는 class 선언,  @Id가 필요함.  @GeneratedValue
+
+
+    /* Entity Listener 정의....  별도의 EntityListener를 구현해서 @EntityListener로 지정함.
+    @PrePersist
+    public void PrePersist() {
+        System.out.println(">>>>  PrePersist 호출 ");
+        this.createdAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void PreUpdate() {
+        System.out.println(">>>>  PreUpdate 호출 ");
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreRemove
+    public void PreRemove() {
+        System.out.println(">>>>  PreRemove 호출 ");
+    }
+
+    @PostPersist
+    public void PostPersist() {
+        System.out.println(">>>>  PostPersist 호출 ");
+    }
+
+    @PostUpdate
+    public void PostUpdate() {
+        System.out.println(">>>>  PostUpdate 호출 ");
+    }
+
+
+    @PostRemove
+    public void PostRemove() {
+        System.out.println(">>>>  PostRemove 호출 ");
+    }
+
+    @PostLoad
+    public void PostLoad() {
+        System.out.println(">>>>  PostLoad 호출 ");
+    }
+    */
 }
