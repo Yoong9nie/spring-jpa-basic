@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 //@Getter
 //@Setter
 //@ToString
@@ -22,9 +24,11 @@ import java.util.List;
 @Builder
 @Entity
 //@EntityListeners( value = { MyEntityListener.class, UserEntityListener.class })
-@EntityListeners( value = { AuditingEntityListener.class, UserEntityListener.class })
+//@EntityListeners( value = { AuditingEntityListener.class, UserEntityListener.class })
+// AuditingEntityListener.class 는 BaseEntity class에서 처리함.
+@EntityListeners( value = { UserEntityListener.class })
 // @Table( name = "User", indexes = {@Index(columnList="name")}, uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
-public class User implements Auditable {
+public class User extends BaseEntity implements Auditable {
     @Id
     @GeneratedValue
     private Long id;
@@ -43,14 +47,14 @@ public class User implements Auditable {
     //@Column(name = "crtdat")
     //@Column(nullable = false)
     //@Column(updatable = false)          //  update 구문에 set 구문에 들어가지 않음.
-    @CreatedDate                           // JpaAuditing 대상으로 함.
-    private LocalDateTime createdAt;
+    //@CreatedDate                           // JpaAuditing 대상으로 함.
+    //private LocalDateTime createdAt;
 
     //@Column(name = "uptdat")
     //@Column(nullable = false)
     //@Column(insertable = false )        //  insert시에  values 구문에 들어가지 않음.
-    @LastModifiedDate                     // JpaAuditing 대상으로 함.
-    private LocalDateTime updatedAt;
+    //@LastModifiedDate                     // JpaAuditing 대상으로 함.
+    //private LocalDateTime updatedAt;
 
     @OneToMany(fetch = FetchType.EAGER)
     private List<Address> address;
